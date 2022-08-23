@@ -1,26 +1,23 @@
 //refactor each function+explain better than it already has been explained
 
+import { collection, getDoc, getFirestore, where } from 'firebase/firestore';
 import { firebase, FieldValue } from '../lib/firebase';
 
 export async function doesUsernameExist(username) {
-    const result = await firebase //vamos a firebase que esta en la carpeta lib
-        .firestore() //vamos a firestore
-        .collection('users') //vamos a la coleccion de usuarios
-        .where('username', '==', username.toLowerCase()) //donde username sea igual al username que el usuario pasa
-        .get(); //traelo
+    const db = getFirestore();
+    const q = query(collection(db, "users"), where("username", "==", username.toLowerCase()));
 
-    return result.docs.map((user) => user.data().length > 0);
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.map((user) => user.data().length > 0);
 }
 
 export async function getUserByUsername(username) {
     // check if username exists
-    const result = await firebase
-        .firestore()
-        .collection('users')
-        .where('username', '==', username.toLowerCase())
-        .get();
+    const db = getFirestore();
+    const q = query(collection(db, 'users'), where("username", "==", username.toLowerCase()));
+    const querySnapshot = await getDocs(q);
 
-    return result.docs.map((item) => ({
+    return querySnapshot.map((item) => ({
         ...item.data(),
         docId: item.id,
     }));

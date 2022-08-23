@@ -19,17 +19,9 @@ export default function Actions({
     const handleToggleLiked = async () => {
         setToggleLiked((toggleLiked) => !toggleLiked); // let's say we have an image that hasn't been liked, we switch it with '!toggleLiked' so now it's liked (true to false or viceversa)
 
-        //refactor to V9 and explain
-        await firebase
-            .firestore()
-            .collection('photos')
-            .doc(docId)
-            .update({
-                likes: toggleLiked
-                    ? FieldValue.arrayRemove(userId)
-                    : FieldValue.arrayUnion(userId), // if they liked it (toggleLiked = true), remove name from array // P.S. leave my comments or
-                //add another if my are not good enough
-            });
+        const db = getFirestore();
+        const userRef = collection(db, "photos", docId);
+        setDoc(userRef, {likes: toggleLiked ? FieldValue.arrayRemove(userId) : FieldValue.arrayUnion(userId)});
 
         setLikes((likes) => (toggleLiked ? likes - 1 : likes + 1));
     };

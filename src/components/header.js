@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import * as ROUTES from '../constants/routes';
 
 import { useNavigate } from 'react-router-dom';
+import { signOut } from 'firebase/auth';
 export default function Header() {
     const { firebase } = useContext(FirebaseContext);
     const { user } = useContext(UserContext);
@@ -93,12 +94,12 @@ export default function Header() {
                                     type='button'
                                     title='Sign Out'
                                     onClick={() => {
-                                        firebase.auth().signOut();
+                                        signOut();
                                         navigate(ROUTES.LOGIN);
                                     }}
                                     onKeyDown={(event) => {
                                         if (event.key === 'Enter') {
-                                            firebase.auth().signOut();
+                                            signOut();
                                             navigate(ROUTES.LOGIN);
                                         }
                                     }}

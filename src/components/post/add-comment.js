@@ -2,6 +2,8 @@ import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import FirebaseContext from '../../context/firebase';
 import UserContext from '../../context/user';
+import { getFirestore, collection, addDoc, updateDoc } from "firebase/firestore";
+
 
 export default function AddComment({
     docId,
@@ -27,13 +29,10 @@ export default function AddComment({
         setComment('');
 
         // saving into firebase
-        return firebase //refactor to V9 and explain
-            .firestore()
-            .collection('photos')
-            .doc(docId) // we need to modify by the docId and then add into the comments array
-            .update({
-                comments: FieldValue.arrayUnion({ displayName, comment }),
-            });
+
+        const db = getFirestore();
+        const userRef = collection(db, "photos", docId);
+        return setDoc(userRef, {comments: FieldValue.arrayUnion({ displayName, comment }});
     };
 
     return (
